@@ -1,6 +1,6 @@
 # 📚 초보자를 위한 종합 학습서
 
-> 이 문서는 처음 데이터 분석을 배우는 사람을 위해, 이 프로젝트를 하나의 학습 여정으로 정리한 문서입니다. 실습 코드는 [`TUTORIAL.md`](TUTORIAL.md), 실행 방법은 [`FILE_GUIDE.md`](FILE_GUIDE.md)를 함께 참고하세요.
+> 이 문서는 처음 데이터 분석을 배우는 사람을 위해, 이 프로젝트를 하나의 학습 여정으로 정리한 문서입니다. 실습 코드는 `TUTORIAL.md`, 실행 방법은 `FILE_GUIDE.md`를 함께 참고하세요.
 
 ## 1️⃣ 이 프로젝트가 기르고자 하는 3가지 역량
 
@@ -53,7 +53,7 @@
 
 | 하고 싶은 것 | 참고 문서 |
 | :--- | :--- |
-| 코드를 직접 실행하고 결과를 눈으로 보고 싶다 | [`FILE_GUIDE.md`](FILE_GUIDE.md) |
-| 판다스 문법을 하나씩 따라 치며 익히고 싶다 | [`TUTORIAL.md`](TUTORIAL.md) → `tutorial_practice.py` |
-| 수식과 차트 해석을 더 깊이 이해하고 싶다 | [`ANALYSIS_EXPLANATION.md`](ANALYSIS_EXPLANATION.md) |
+| 코드를 직접 실행하고 결과를 눈으로 보고 싶다 | `FILE_GUIDE.md` |
+| 판다스 문법을 하나씩 따라 치며 익히고 싶다 | `TUTORIAL.md` → `tutorial_practice.py` |
+| 수식과 차트 해석을 더 깊이 이해하고 싶다 | `ANALYSIS_EXPLANATION.md` |
 | 9월 예측이 실제로 맞았는지 확인하고 싶다 | 9월이 지난 뒤 `./run.sh fetch`로 재수집 후 `REPORT.md`와 비교 |

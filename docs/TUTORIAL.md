@@ -1,6 +1,6 @@
 # 🔰 초보자용 단계별 실습 가이드
 
-이 문서는 `tutorial_practice.py`를 따라가며 판다스(pandas) 기초 문법을 익히는 가이드입니다. 코드를 직접 실행해보려면 [`FILE_GUIDE.md`](FILE_GUIDE.md)의 실행 방법을 먼저 확인하세요.
+이 문서는 `tutorial_practice.py`를 따라가며 판다스(pandas) 기초 문법을 익히는 가이드입니다. 코드를 직접 실행해보려면 `FILE_GUIDE.md`의 실행 방법을 먼저 확인하세요.
 
 ```bash
 ./run.sh tutorial
@@ -56,4 +56,4 @@ plt.savefig("images/tutorial_yearly_avg_temp.png")
 2. `summary` 데이터프레임에서 폭염일수가 가장 많았던 연도를 찾아보세요. (힌트: `.sort_values("폭염일수", ascending=False)`)
 3. `fetch_kma_data.py`의 `HEATWAVE_THRESHOLD`(33.0)를 34.0으로 바꾸고 `./run.sh fetch`(API 키 필요)로 다시 수집하면 폭염일수가 어떻게 달라지는지 확인해보세요.
 
-막히면 [`LEARNING_GUIDE.md`](LEARNING_GUIDE.md)의 핵심 개념 설명을 참고하세요.
+막히면 `LEARNING_GUIDE.md`의 핵심 개념 설명을 참고하세요.
