@@ -1,0 +1,10 @@
+services:
+  analytics:
+    build: .
+    container_name: m1-1-final-analytics
+    volumes:
+      - .:/workspace
+    environment:
+      - PYTHONUNBUFFERED=1
+    stdin_open: true
+    tty: true
