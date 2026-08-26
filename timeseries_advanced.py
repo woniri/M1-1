@@ -128,6 +128,15 @@ print(top_hot.assign(date=top_hot["date"].dt.strftime("%Y-%m-%d")).round(2).to_s
 print("[잔차 최대 이례적 저온일 Top3]")
 print(top_cold.assign(date=top_cold["date"].dt.strftime("%Y-%m-%d")).round(2).to_string(index=False))
 
+stl_df = df_concat[["date", "year", "season_day", "cycle_index", "avg_temp"]].copy()
+stl_df = stl_df.rename(columns={"avg_temp": "observed"})
+stl_df["trend"] = trend.values
+stl_df["seasonal"] = seasonal.values
+stl_df["resid"] = resid.values
+stl_csv_path = os.path.join(DATA_DIR, "stl_decomposition.csv")
+stl_df.to_csv(stl_csv_path, index=False, encoding="utf-8-sig", date_format="%Y-%m-%d")
+print(f"\n저장 완료: {stl_csv_path} ({len(stl_df)}행) — 대시보드에서 추세/계절성/잔차를 각각 인터랙티브 차트로 재사용")
+
 print("\n🎨 [시각화 5] 05_stl_decomposition.png")
 fig, axes = plt.subplots(4, 1, figsize=(14, 11), sharex=True)
 axes[0].plot(df_concat["cycle_index"], series.values, color="#374151", linewidth=1.0)
