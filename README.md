@@ -52,7 +52,7 @@
 
 ```bash
 ./run.sh build      # 최초 1회, Docker 이미지 빌드
-./run.sh analyze    # 분석 실행 + images/에 차트 4개 생성
+./run.sh analyze    # 분석 실행 + images/에 차트 5개 생성 (이동평균·변화율 포함)
 ./run.sh timeseries # (선택, 보너스) STL 분해 + 예측 모델 백테스트
 ./run.sh dashboard  # (선택, 보너스) 인터랙티브 대시보드 기동 → http://localhost:8501
 ./run.sh tutorial   # (선택) 초보자용 판다스 실습 스크립트
@@ -83,15 +83,15 @@ export KMA_SERVICE_KEY="발급받은_인증키"
 ```
 .
 ├── fetch_kma_data.py       # 기상청 ASOS API 실측 데이터 수집 스크립트 (API 키 필요)
-├── analysis.py             # 통계 분석 + 4대 시각화 (data/의 CSV만 있으면 API 키 불필요)
+├── analysis.py             # 통계 분석 + 5대 시각화 (이동평균·변화율 포함, data/의 CSV만 있으면 API 키 불필요)
 ├── timeseries_advanced.py  # (보너스) STL 시계열 분해 + 예측 모델 백테스트
 ├── dashboard.py            # (보너스) Streamlit 인터랙티브 대시보드
 ├── tutorial_practice.py    # 초보자용 판다스 실습 스크립트
 ├── data/                    # 실측 CSV + 백테스트 결과 CSV (이미 포함됨)
-├── images/                  # analysis.py(4개) + timeseries_advanced.py(2개)가 생성하는 차트
+├── images/                  # analysis.py(5개) + timeseries_advanced.py(2개)가 생성하는 차트
 └── docs/
     ├── REPORT.md               # 최종 분석 리포트 (질문 답변, 인사이트, 한계점, AI 사용 로그)
-    ├── ANALYSIS_EXPLANATION.md # 분석 수식·차트 심층 해설 (7장: STL 분해·예측 백테스트)
+    ├── ANALYSIS_EXPLANATION.md # 분석 수식·차트 심층 해설 (5-1장: 이동평균·변화율 / 7장: STL 분해·예측 백테스트)
     ├── LEARNING_GUIDE.md       # 초보자용 종합 학습서
     ├── TUTORIAL.md             # 초보자용 실습 가이드
     └── FILE_GUIDE.md           # 폴더/파일 구성 및 실행 안내
@@ -119,8 +119,8 @@ export KMA_SERVICE_KEY="발급받은_인증키"
 | 데이터 출처 명시 | ✅ | 공공데이터포털 ASOS 일자료 조회서비스 |
 | 분석 질문 3개 이상 | ✅ | 위 2장 |
 | 결측치 확인 및 처리 | ✅ | 1건, 선형보간 (`docs/REPORT.md`) |
-| 시계열 분석 기법 2가지 이상 | ✅ | 연도별/월별 집계, 누적합, 평년 편차(Anomaly), 감쇄 예측 모델 |
-| 시각화 2개 이상 | ✅ | 4개(막대/타임라인/히트맵/누적곡선) |
+| 시계열 분석 기법 2가지 이상 | ✅ | **이동평균(7일)**, **변화율(전일 대비 %)**, 연도별/월별 집계, 누적합, 평년 편차(Anomaly), 감쇄 예측 모델 — 총 6가지 (`docs/REPORT.md` 6-1장, `docs/ANALYSIS_EXPLANATION.md` 5-1장) |
+| 시각화 필수 2개 + 권장 1개 이상(총 3개 이상) | ✅ | **필수 2개**: ①막대(연도별 폭염·열대야), ②타임라인(실측+예측) — **권장 추가 3개**: ③히트맵(월별 편차), ④누적곡선(폭염 페이스), ⑤이동평균&변화율 — 합계 **5개**로 권장 기준(3개 이상) 충족 |
 | 인사이트 3개 이상 | ✅ | `docs/REPORT.md` |
 | 결론/한계점 | ✅ | `docs/REPORT.md` |
 | AI 사용 로그 | ✅ | `docs/REPORT.md` |

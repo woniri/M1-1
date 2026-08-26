@@ -191,6 +191,50 @@ plt.tight_layout()
 plt.savefig(os.path.join(IMG_DIR, "04_cumulative_heatwave_pace.png"), dpi=200)
 plt.close()
 
+# ------------------------------------------------------------------
+# 분석: 이동평균(Moving Average) & 변화율(Rate of Change)
+# ------------------------------------------------------------------
+print("\n" + "=" * 70)
+print("📉 [Step 3] 이동평균 & 변화율 분석")
+print("=" * 70)
+
+df_curr_obs = df_summer[(df_summer["year"] == current_year) & (df_summer["type"] == "관측치")].sort_values("date").reset_index(drop=True)
+df_curr_obs["ma7"] = df_curr_obs["avg_temp"].rolling(window=7, min_periods=1, center=True).mean()
+df_curr_obs["change_rate_pct"] = df_curr_obs["max_temp"].pct_change() * 100
+
+print("[이동평균] 7일 이동평균을 평균기온에 적용 — 하루하루의 날씨 노이즈를 눌러서 그 밑에 깔린 "
+      "'며칠 단위로 지속되는 흐름'(더워지는 중인지 식는 중인지)을 드러내기 위함")
+print("[변화율] 전일 대비 최고기온 변화율(%)을 계산 — 완만한 변화와 급격한 승온/냉각 시점을 구분하기 위함")
+
+biggest_rise = df_curr_obs.loc[df_curr_obs["change_rate_pct"].idxmax()]
+biggest_drop = df_curr_obs.loc[df_curr_obs["change_rate_pct"].idxmin()]
+print(f"• 가장 급격한 승온일: {biggest_rise['date'].strftime('%Y-%m-%d')} (전일 대비 {biggest_rise['change_rate_pct']:+.1f}%, "
+      f"{biggest_rise['max_temp']:.1f}℃)")
+print(f"• 가장 급격한 냉각일: {biggest_drop['date'].strftime('%Y-%m-%d')} (전일 대비 {biggest_drop['change_rate_pct']:+.1f}%, "
+      f"{biggest_drop['max_temp']:.1f}℃)")
+
+print("\n🎨 [시각화 5] 05_moving_average_change_rate.png")
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(13, 9), sharex=True)
+
+ax1.plot(df_curr_obs["date"], df_curr_obs["avg_temp"], color="#cbd5e1", linewidth=1.2, label="일별 평균기온(실측)")
+ax1.plot(df_curr_obs["date"], df_curr_obs["ma7"], color="#059669", linewidth=2.5, label="7일 이동평균")
+ax1.set_title(f"{current_year}년 일별 평균기온 vs 7일 이동평균", fontsize=14, fontweight="bold", pad=12)
+ax1.set_ylabel("평균기온(℃)")
+ax1.legend(loc="upper left")
+ax1.grid(True, linestyle="--", alpha=0.6)
+
+colors_rate = ["#ef4444" if v >= 0 else "#3b82f6" for v in df_curr_obs["change_rate_pct"].fillna(0)]
+ax2.bar(df_curr_obs["date"], df_curr_obs["change_rate_pct"], color=colors_rate, width=0.8)
+ax2.axhline(0, color="#6b7280", linewidth=1)
+ax2.set_title("전일 대비 최고기온 변화율(%) — 급격한 승온(빨강)·냉각(파랑) 시점", fontsize=14, fontweight="bold", pad=12)
+ax2.set_xlabel("날짜")
+ax2.set_ylabel("변화율 (%)")
+ax2.grid(True, linestyle="--", alpha=0.6)
+
+plt.tight_layout()
+plt.savefig(os.path.join(IMG_DIR, "05_moving_average_change_rate.png"), dpi=200)
+plt.close()
+
 print("\n" + "=" * 70)
 print("✅ 모든 분석 및 시각화가 완료되었습니다!")
 print("=" * 70)

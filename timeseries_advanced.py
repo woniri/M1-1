@@ -137,7 +137,7 @@ stl_csv_path = os.path.join(DATA_DIR, "stl_decomposition.csv")
 stl_df.to_csv(stl_csv_path, index=False, encoding="utf-8-sig", date_format="%Y-%m-%d")
 print(f"\n저장 완료: {stl_csv_path} ({len(stl_df)}행) — 대시보드에서 추세/계절성/잔차를 각각 인터랙티브 차트로 재사용")
 
-print("\n🎨 [시각화 5] 05_stl_decomposition.png")
+print("\n🎨 [시각화 6] 06_stl_decomposition.png")
 fig, axes = plt.subplots(4, 1, figsize=(14, 11), sharex=True)
 axes[0].plot(df_concat["cycle_index"], series.values, color="#374151", linewidth=1.0)
 axes[0].set_ylabel("실측 평균기온(℃)")
@@ -156,7 +156,7 @@ for y in complete_years:
         ax.axvline(boundary, color="#d1d5db", linestyle=":", linewidth=1.0)
     axes[0].text(boundary + 3, axes[0].get_ylim()[1] * 0.97, f"{y}년", fontsize=9, color="#6b7280")
 plt.tight_layout()
-plt.savefig(os.path.join(IMG_DIR, "05_stl_decomposition.png"), dpi=200)
+plt.savefig(os.path.join(IMG_DIR, "06_stl_decomposition.png"), dpi=200)
 plt.close()
 
 # ------------------------------------------------------------------
@@ -233,7 +233,7 @@ print(f"\n저장 완료: {backtest_path}")
 better_model = mean_by_model["mae"].idxmin()
 print(f"\n✅ 5개년 백테스트 결과, 9월 평균기온 예측 오차(MAE)가 더 낮은 모델: 「{better_model}」")
 
-print("\n🎨 [시각화 6] 06_forecast_backtest_comparison.png")
+print("\n🎨 [시각화 7] 07_forecast_backtest_comparison.png")
 fig, axes = plt.subplots(1, 2, figsize=(14, 6))
 pivot_mae = df_backtest.pivot(index="year", columns="model", values="mae")
 pivot_mae.plot(kind="bar", ax=axes[0], color=["#94a3b8", "#dc2626"], edgecolor="black", alpha=0.9)
@@ -253,7 +253,7 @@ axes[1].grid(axis="y", linestyle="--", alpha=0.6)
 for i, v in enumerate(mean_by_model["mae"].values):
     axes[1].text(i, v, f"{v:.2f}℃", ha="center", va="bottom", fontweight="bold")
 plt.tight_layout()
-plt.savefig(os.path.join(IMG_DIR, "06_forecast_backtest_comparison.png"), dpi=200)
+plt.savefig(os.path.join(IMG_DIR, "07_forecast_backtest_comparison.png"), dpi=200)
 plt.close()
 
 # ------------------------------------------------------------------

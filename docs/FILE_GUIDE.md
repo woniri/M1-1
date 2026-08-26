@@ -23,7 +23,7 @@
 │
 └── 결과물
     ├── data/*.csv                 → 기상청 실측 데이터 + 백테스트 결과 (이미 포함됨)
-    └── images/*.png                → analysis.py(4종) + timeseries_advanced.py(2종) + 실습(1종) 차트
+    └── images/*.png                → analysis.py(5종, 이동평균·변화율 포함) + timeseries_advanced.py(2종) + 실습(1종) 차트
 ```
 
 ## 2. 실행 방법 (Docker 기반)
@@ -48,7 +48,7 @@
 1. 데이터 로드 로그
 2. 연도별 통계 표(연도, 평균기온, 폭염일수, 열대야일수)
 3. 올해 vs 과거 평균 비교 요약(편차는 부호 포함 — 예: `-5.2일`처럼 음수도 정상 출력)
-4. `images/` 폴더에 PNG 4개 생성 로그
+4. `images/` 폴더에 PNG 5개 생성 로그(막대/타임라인/히트맵/누적곡선/이동평균·변화율)
 
 ### Step 3. (선택, API 키 필요) 데이터를 새로 수집하고 싶다면
 
@@ -70,7 +70,7 @@ export KMA_SERVICE_KEY="발급받은_인증키"    # data.go.kr에서 개인 발
 ./run.sh timeseries
 ```
 
-`analysis.py`와 마찬가지로 `data/*.csv`만 있으면 API 키 없이 바로 실행됩니다. `images/05_stl_decomposition.png`·`06_forecast_backtest_comparison.png`와 `data/forecast_backtest_results.csv`·`data/september_forecast_model_comparison.csv`가 생성됩니다. 자세한 해석은 `docs/ANALYSIS_EXPLANATION.md` 7장, `docs/REPORT.md` 부록을 참고하세요.
+`analysis.py`와 마찬가지로 `data/*.csv`만 있으면 API 키 없이 바로 실행됩니다. `images/06_stl_decomposition.png`·`07_forecast_backtest_comparison.png`와 `data/forecast_backtest_results.csv`·`data/september_forecast_model_comparison.csv`가 생성됩니다. 자세한 해석은 `docs/ANALYSIS_EXPLANATION.md` 7장, `docs/REPORT.md` 부록을 참고하세요.
 
 ### Step 3-2. (선택, 보너스) 인터랙티브 대시보드 기동
 

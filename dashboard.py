@@ -256,8 +256,8 @@ with tab_timeline:
             )
 
 with tab_static:
-    st.subheader("analysis.py가 생성한 4대 정적 차트 (원본 미션 기준: 6\\~8월, 폭염 33℃, 열대야 25℃ 고정)")
-    st.caption("이 4개는 미션 제출용으로 고정된 기준값을 써서 미리 계산·저장해둔 원본 이미지입니다. 다른 조건으로 직접 탐색하려면 🎛️ 조건 탐색 탭을 이용하세요.")
+    st.subheader("analysis.py가 생성한 5대 정적 차트 (원본 미션 기준: 6\\~8월, 폭염 33℃, 열대야 25℃ 고정)")
+    st.caption("이 5개는 미션 제출용으로 고정된 기준값을 써서 미리 계산·저장해둔 원본 이미지입니다. 다른 조건으로 직접 탐색하려면 🎛️ 조건 탐색 탭을 이용하세요.")
     charts = {
         "01_extreme_weather_by_year.png": (
             "연도별 폭염·열대야 일수 비교",
@@ -285,6 +285,13 @@ with tab_static:
             "2024\\~2025년(진한 주황/빨강)은 여름 중반부터 가파르게 상승해 27일에 도달했고, **2026년(굵은 실선)은 8월 초"
             "(8/1\\~8/11) 구간에서만 집중적으로 오르고** 이후 평평하게 이어지다 15일에서 멈췄습니다. 점선은 9월 예측 구간으로, "
             "추가 상승이 없어 수평으로 이어집니다(9월 폭염 0일 예측).",
+        ),
+        "05_moving_average_change_rate.png": (
+            f"{current_year}년 이동평균 & 변화율",
+            "위 패널의 굵은 초록 선은 **7일 이동평균**으로, 하루하루의 노이즈를 눌러 계절 흐름(6월 하순 저점 → 8월 초 정점 → "
+            "완만한 하강)을 선명하게 보여줍니다. 아래 패널은 **전일 대비 최고기온 변화율(%)**로, 막대가 클수록 급격한 승온(빨강)·"
+            "냉각(파랑)입니다. **가장 급격한 승온은 6/26(+25.0%)**, **가장 급격한 냉각은 6/20(-32.4%)**로 둘 다 6월에 몰려 있어, "
+            "8월 폭염 구간은 '급변'이 아니라 '높은 수준의 지속'이었음을 대비해서 보여줍니다.",
         ),
     }
     for fname, (caption, detail) in charts.items():
@@ -389,7 +396,7 @@ with tab_stl:
     st.markdown("#### 예측 모델 백테스트 — 베이스라인 vs Holt, 어느 쪽이 더 정확했나")
     bt_col1, bt_col2 = st.columns([1, 1])
     with bt_col1:
-        backtest_path = os.path.join(IMG_DIR, "06_forecast_backtest_comparison.png")
+        backtest_path = os.path.join(IMG_DIR, "07_forecast_backtest_comparison.png")
         if os.path.exists(backtest_path):
             st.image(backtest_path, caption="연도별·모델별 9월 예측 오차(MAE) 비교", use_container_width=True)
             st.caption(
