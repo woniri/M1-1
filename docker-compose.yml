@@ -8,3 +8,14 @@ services:
       - PYTHONUNBUFFERED=1
     stdin_open: true
     tty: true
+
+  dashboard:
+    build: .
+    container_name: m1-1-final-dashboard
+    volumes:
+      - .:/workspace
+    environment:
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "8501:8501"
+    command: ["streamlit", "run", "dashboard.py", "--server.port=8501", "--server.address=0.0.0.0"]

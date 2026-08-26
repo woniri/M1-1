@@ -25,6 +25,10 @@ case "$1" in
     echo "🔬 [Docker] STL 시계열 분해 + 예측 백테스트 실행 중..."
     docker compose run --rm analytics python timeseries_advanced.py
     ;;
+  dashboard)
+    echo "📊 [Docker] Streamlit 대시보드 기동 중... (http://localhost:8501, 종료: Ctrl+C)"
+    docker compose up --build dashboard
+    ;;
   tutorial)
     echo "🔰 [Docker] 초보자 실습 스크립트 실행 중..."
     docker compose run --rm analytics python tutorial_practice.py
@@ -47,6 +51,7 @@ case "$1" in
       echo "                              # 다른 지점/기간으로 재수집"
       echo "  ./run.sh analyze            # 분석 + 시각화 실행"
       echo "  ./run.sh timeseries         # STL 분해 + 예측 백테스트(보너스 심화) 실행"
+      echo "  ./run.sh dashboard          # Streamlit 대시보드 기동 (http://localhost:8501)"
       echo "  ./run.sh tutorial           # 초보자 실습 스크립트 실행"
       echo "  ./run.sh <script.py>        # 임의의 파이썬 스크립트 Docker 내 실행"
       echo "============================================================"

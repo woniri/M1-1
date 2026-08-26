@@ -50,9 +50,11 @@
 이 저장소에는 이미 수집된 실측 CSV(`data/*.csv`)가 포함되어 있어서, **기상청 API 키가 없어도** 아래 두 명령만으로 분석·시각화를 바로 재현할 수 있습니다.
 
 ```bash
-./run.sh build     # 최초 1회, Docker 이미지 빌드
-./run.sh analyze   # 분석 실행 + images/에 차트 4개 생성
-./run.sh tutorial  # (선택) 초보자용 판다스 실습 스크립트
+./run.sh build      # 최초 1회, Docker 이미지 빌드
+./run.sh analyze    # 분석 실행 + images/에 차트 4개 생성
+./run.sh timeseries # (선택, 보너스) STL 분해 + 예측 모델 백테스트
+./run.sh dashboard  # (선택, 보너스) 인터랙티브 대시보드 기동 → http://localhost:8501
+./run.sh tutorial   # (선택) 초보자용 판다스 실습 스크립트
 ```
 
 ### 5.2 데이터를 직접 새로 수집하고 싶다면 (API 키 필요)
@@ -82,6 +84,7 @@ export KMA_SERVICE_KEY="발급받은_인증키"
 ├── fetch_kma_data.py       # 기상청 ASOS API 실측 데이터 수집 스크립트 (API 키 필요)
 ├── analysis.py             # 통계 분석 + 4대 시각화 (data/의 CSV만 있으면 API 키 불필요)
 ├── timeseries_advanced.py  # (보너스) STL 시계열 분해 + 예측 모델 백테스트
+├── dashboard.py            # (보너스) Streamlit 인터랙티브 대시보드
 ├── tutorial_practice.py    # 초보자용 판다스 실습 스크립트
 ├── data/                    # 실측 CSV + 백테스트 결과 CSV (이미 포함됨)
 ├── images/                  # analysis.py(4개) + timeseries_advanced.py(2개)가 생성하는 차트
@@ -135,4 +138,4 @@ export KMA_SERVICE_KEY="발급받은_인증키"
 | 과제 | 상태 | 내용 |
 | :--- | :---: | :--- |
 | 시계열 분해(STL) + 예측 모델 백테스트 | ✅ 완료 | `timeseries_advanced.py`(`./run.sh timeseries`) — 추세/계절성/잔차 분리, Holt 지수평활을 베이스라인과 5개년 백테스트로 정면 비교. 상세 내용은 `docs/ANALYSIS_EXPLANATION.md` 7장 참고 |
-| 대시보드 서비스화 | 🔜 다음 단계 | 분석 결과를 인터랙티브 웹 대시보드로 제공 (Streamlit, Docker 서비스로 기동) |
+| 대시보드 서비스화 | ✅ 완료 | `dashboard.py`(`./run.sh dashboard`, `http://localhost:8501`) — Streamlit 기반 인터랙티브 대시보드. KPI 카드, 연도 선택형 Plotly 타임라인, 정적 차트 갤러리, STL/백테스트 결과, 원본 데이터 탐색 |

@@ -17,6 +17,7 @@
 │   ├── fetch_kma_data.py         → 기상청 ASOS API 실측 데이터 수집 (API 키 필요)
 │   ├── analysis.py               → 통계 분석 + 4대 시각화 (data/의 CSV만 있으면 API 키 불필요)
 │   ├── timeseries_advanced.py    → (보너스) STL 분해 + 예측 모델 백테스트
+│   ├── dashboard.py              → (보너스) Streamlit 인터랙티브 대시보드
 │   ├── tutorial_practice.py      → 초보자 실습용 미니 스크립트
 │   └── requirements.txt          → 의존성 목록
 │
@@ -70,6 +71,14 @@ export KMA_SERVICE_KEY="발급받은_인증키"    # data.go.kr에서 개인 발
 ```
 
 `analysis.py`와 마찬가지로 `data/*.csv`만 있으면 API 키 없이 바로 실행됩니다. `images/05_stl_decomposition.png`·`06_forecast_backtest_comparison.png`와 `data/forecast_backtest_results.csv`·`data/september_forecast_model_comparison.csv`가 생성됩니다. 자세한 해석은 `docs/ANALYSIS_EXPLANATION.md` 7장, `docs/REPORT.md` 부록을 참고하세요.
+
+### Step 3-2. (선택, 보너스) 인터랙티브 대시보드 기동
+
+```bash
+./run.sh dashboard
+```
+
+Streamlit 기반 웹 대시보드가 `http://localhost:8501`에서 뜹니다(종료: 터미널에서 `Ctrl+C`). `data/*.csv`와 `images/*.png`만 있으면 API 키 없이 바로 실행되며, KPI 카드·연도 선택형 인터랙티브 타임라인·정적 차트 갤러리·STL/백테스트 결과·원본 데이터 탐색 탭으로 구성됩니다. 데이터를 갱신했다면(`./run.sh fetch` 또는 `./run.sh timeseries` 재실행) 브라우저를 새로고침하면 반영됩니다.
 
 ### Step 4. (선택) 초보자 실습 스크립트
 
