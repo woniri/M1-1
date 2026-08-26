@@ -16,12 +16,13 @@
 ├── 코드 (Docker 컨테이너 안에서 실행)
 │   ├── fetch_kma_data.py         → 기상청 ASOS API 실측 데이터 수집 (API 키 필요)
 │   ├── analysis.py               → 통계 분석 + 4대 시각화 (data/의 CSV만 있으면 API 키 불필요)
+│   ├── timeseries_advanced.py    → (보너스) STL 분해 + 예측 모델 백테스트
 │   ├── tutorial_practice.py      → 초보자 실습용 미니 스크립트
 │   └── requirements.txt          → 의존성 목록
 │
 └── 결과물
-    ├── data/*.csv                 → 기상청 실측 데이터 (이미 포함됨)
-    └── images/*.png                → analysis.py가 생성하는 차트 4종 + 실습 차트 1종
+    ├── data/*.csv                 → 기상청 실측 데이터 + 백테스트 결과 (이미 포함됨)
+    └── images/*.png                → analysis.py(4종) + timeseries_advanced.py(2종) + 실습(1종) 차트
 ```
 
 ## 2. 실행 방법 (Docker 기반)
@@ -61,6 +62,14 @@ export KMA_SERVICE_KEY="발급받은_인증키"    # data.go.kr에서 개인 발
 - `run.sh fetch`는 호스트의 `KMA_SERVICE_KEY`를 컨테이너 실행 시점에만 `-e` 옵션으로 전달합니다 — 이미지·코드에는 저장되지 않습니다.
 - 실행하는 "오늘" 날짜를 기준으로 어제까지의 실측 데이터를 수집하므로, 시간이 지난 뒤 재실행하면 실측 구간이 늘어나고 예측 구간이 줄어들며 수치가 달라집니다. **재현성이 필요하면 이미 저장된 `data/*.csv`를 건드리지 마세요.**
 - 실행 후 `./run.sh analyze`를 다시 실행해 차트를 갱신하세요.
+
+### Step 3-1. (선택, 보너스) STL 분해 + 예측 모델 백테스트
+
+```bash
+./run.sh timeseries
+```
+
+`analysis.py`와 마찬가지로 `data/*.csv`만 있으면 API 키 없이 바로 실행됩니다. `images/05_stl_decomposition.png`·`06_forecast_backtest_comparison.png`와 `data/forecast_backtest_results.csv`·`data/september_forecast_model_comparison.csv`가 생성됩니다. 자세한 해석은 `docs/ANALYSIS_EXPLANATION.md` 7장, `docs/REPORT.md` 부록을 참고하세요.
 
 ### Step 4. (선택) 초보자 실습 스크립트
 

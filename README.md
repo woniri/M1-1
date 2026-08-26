@@ -79,14 +79,15 @@ export KMA_SERVICE_KEY="발급받은_인증키"
 
 ```
 .
-├── fetch_kma_data.py   # 기상청 ASOS API 실측 데이터 수집 스크립트 (API 키 필요)
-├── analysis.py         # 통계 분석 + 4대 시각화 (data/의 CSV만 있으면 API 키 불필요)
-├── tutorial_practice.py# 초보자용 판다스 실습 스크립트
-├── data/                # 실측 CSV 3개 (이미 포함됨)
-├── images/              # analysis.py가 생성하는 차트 4개
+├── fetch_kma_data.py       # 기상청 ASOS API 실측 데이터 수집 스크립트 (API 키 필요)
+├── analysis.py             # 통계 분석 + 4대 시각화 (data/의 CSV만 있으면 API 키 불필요)
+├── timeseries_advanced.py  # (보너스) STL 시계열 분해 + 예측 모델 백테스트
+├── tutorial_practice.py    # 초보자용 판다스 실습 스크립트
+├── data/                    # 실측 CSV + 백테스트 결과 CSV (이미 포함됨)
+├── images/                  # analysis.py(4개) + timeseries_advanced.py(2개)가 생성하는 차트
 └── docs/
     ├── REPORT.md               # 최종 분석 리포트 (질문 답변, 인사이트, 한계점, AI 사용 로그)
-    ├── ANALYSIS_EXPLANATION.md # 분석 수식·차트 심층 해설
+    ├── ANALYSIS_EXPLANATION.md # 분석 수식·차트 심층 해설 (7장: STL 분해·예측 백테스트)
     ├── LEARNING_GUIDE.md       # 초보자용 종합 학습서
     ├── TUTORIAL.md             # 초보자용 실습 가이드
     └── FILE_GUIDE.md           # 폴더/파일 구성 및 실행 안내
@@ -128,3 +129,10 @@ export KMA_SERVICE_KEY="발급받은_인증키"
 1. **9월 실측 검증**: 실제 9월이 지나면 `./run.sh fetch`를 재실행해 9월 예측치(폭염·열대야 0일 예측)가 실제와 얼마나 맞았는지 검증하고 `REPORT.md`에 "사후 검증" 절을 추가
 2. **장기 데이터 확보**: 6년보다 긴 기간(10~30년)의 데이터를 추가 수집해 "온난화 추세"를 통계적으로 더 신뢰성 있게 검증 (`docs/REPORT.md` 한계점 참고)
 3. **원인 변수 추가**: 2026년 7월이 왜 평년보다 선선했는지 설명하기 위해 강수량·장마 기간 데이터를 추가 수집
+
+## 10. 보너스 심화 과제
+
+| 과제 | 상태 | 내용 |
+| :--- | :---: | :--- |
+| 시계열 분해(STL) + 예측 모델 백테스트 | ✅ 완료 | `timeseries_advanced.py`(`./run.sh timeseries`) — 추세/계절성/잔차 분리, Holt 지수평활을 베이스라인과 5개년 백테스트로 정면 비교. 상세 내용은 `docs/ANALYSIS_EXPLANATION.md` 7장 참고 |
+| 대시보드 서비스화 | 🔜 다음 단계 | 분석 결과를 인터랙티브 웹 대시보드로 제공 (Streamlit, Docker 서비스로 기동) |
