@@ -67,7 +67,8 @@ st.caption(
 # 사이드바 — 연도 선택 + 조건(기간/임계값) 탐색 컨트롤
 # ------------------------------------------------------------------
 st.sidebar.header("🔧 필터")
-selected_years = st.sidebar.multiselect("타임라인에 표시할 연도", all_years, default=[current_year] + past_years[-2:])
+selected_years = st.sidebar.multiselect("비교에 표시할 연도", all_years, default=all_years)
+st.sidebar.caption("🎛️ 조건 탐색과 📈 인터랙티브 타임라인 탭의 연도별 비교 차트에 적용됩니다. (STL 분해는 완결된 5개년 고정, 핵심 지표는 항상 전체 과거 평균 기준)")
 
 st.sidebar.markdown("---")
 st.sidebar.subheader("🎛️ 조건 탐색")
@@ -151,32 +152,37 @@ with tab_explore:
     else:
         st.success(f"원본 기준(6\\~8월·33℃·25℃)과 다른 설정으로 보는 중입니다: **{month_label_md}, 폭염 ≥{heat_threshold:.1f}℃, 열대야 ≥{trop_threshold:.1f}℃**")
 
-    if dyn_summary.empty:
+    dyn_summary_view = dyn_summary[dyn_summary["year"].isin(selected_years)] if selected_years else dyn_summary.iloc[0:0]
+
+    if not selected_years:
+        st.info("사이드바에서 '비교에 표시할 연도'를 하나 이상 선택하세요.")
+    elif dyn_summary_view.empty:
         st.warning("선택한 조건에 해당하는 데이터가 없습니다.")
     else:
         fig_bar = go.Figure()
-        x_labels = dyn_summary["year"].astype(str) + "년"
-        fig_bar.add_trace(go.Bar(x=x_labels, y=dyn_summary["heatwave_days"], name=f"폭염일수(≥{heat_threshold:.1f}℃)", marker_color="#ef4444"))
-        fig_bar.add_trace(go.Bar(x=x_labels, y=dyn_summary["tropical_nights"], name=f"열대야일수(≥{trop_threshold:.1f}℃)", marker_color="#3b82f6"))
+        x_labels = dyn_summary_view["year"].astype(str) + "년"
+        fig_bar.add_trace(go.Bar(x=x_labels, y=dyn_summary_view["heatwave_days"], name=f"폭염일수(≥{heat_threshold:.1f}℃)", marker_color="#ef4444"))
+        fig_bar.add_trace(go.Bar(x=x_labels, y=dyn_summary_view["tropical_nights"], name=f"열대야일수(≥{trop_threshold:.1f}℃)", marker_color="#3b82f6"))
         fig_bar.update_layout(
             barmode="group", xaxis_title="연도", yaxis_title="발생 일수(일)", height=440,
             legend=dict(orientation="h", y=-0.2), title=f"연도별 폭염·열대야 일수 ({month_label} 기준)",
         )
         st.plotly_chart(fig_bar, use_container_width=True)
         st.caption(
-            "이 막대그래프는 왼쪽 사이드바에서 월 범위나 임계값을 바꿀 때마다 원본 CSV에서 즉시 다시 계산됩니다. "
-            "예: 월 범위를 6\\~8월에서 7\\~9월로 옮기면 6월(폭염 적음)이 빠지고 9월(예측 기준, 폭염 0일)이 들어와 총 폭염일수가 달라지는 것을 바로 확인할 수 있습니다 — "
+            "이 막대그래프는 왼쪽 사이드바의 **'비교에 표시할 연도'**로 대상 연도를, **월 범위·임계값**으로 집계 기준을 정하면 "
+            "원본 CSV에서 즉시 다시 계산됩니다. 예: 월 범위를 6\\~8월에서 7\\~9월로 옮기면 6월(폭염 적음)이 빠지고 9월(예측 기준, 폭염 0일)이 들어와 "
+            "총 폭염일수가 달라지는 것을 바로 확인할 수 있습니다 — "
             f"`docs/REPORT.md`의 반례 검토(7\\~9월 재정의 시 {current_year}년 평균기온·폭염일수 재계산)를 숫자로 직접 재현하는 셈입니다."
         )
 
         fig_temp = go.Figure()
-        fig_temp.add_trace(go.Scatter(x=dyn_summary["year"], y=dyn_summary["avg_temp"], mode="lines+markers", line=dict(color="#f59e0b", width=2.5), marker=dict(size=9)))
+        fig_temp.add_trace(go.Scatter(x=dyn_summary_view["year"], y=dyn_summary_view["avg_temp"], mode="lines+markers", line=dict(color="#f59e0b", width=2.5), marker=dict(size=9)))
         fig_temp.update_layout(xaxis_title="연도", yaxis_title="평균기온(℃)", height=320, title=f"연도별 평균기온 ({month_label} 기준)")
         st.plotly_chart(fig_temp, use_container_width=True)
         st.caption("월 범위를 바꾸면 이 선도 함께 움직입니다 — 예를 들어 6월만 선택하면 아직 본격적인 더위가 오기 전이라 다른 달보다 낮은 평균기온대가 나타납니다.")
 
-        st.markdown(f"**{month_label_md} 기준 연도별 집계표**")
-        st.dataframe(dyn_summary.round(2).rename(columns={"year": "연도", "avg_temp": "평균기온(℃)", "heatwave_days": "폭염일수", "tropical_nights": "열대야일수"}), use_container_width=True, hide_index=True)
+        st.markdown(f"**{month_label_md} 기준 연도별 집계표** (선택된 {len(selected_years)}개년)")
+        st.dataframe(dyn_summary_view.round(2).rename(columns={"year": "연도", "avg_temp": "평균기온(℃)", "heatwave_days": "폭염일수", "tropical_nights": "열대야일수"}), use_container_width=True, hide_index=True)
 
 with tab_timeline:
     st.subheader("연도 선택형 기온 타임라인 (마우스 오버로 값 확인, 범례 클릭으로 켜고 끄기)")
