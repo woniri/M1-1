@@ -3,6 +3,7 @@
 > **분석 대상:** 서울특별시(기상청 ASOS 지점 108)
 > **분석 기간:** 관측 2021~2026년 6월~8월(예측 포함) / 예측 2026년 9월
 > **데이터 출처:** [공공데이터포털](https://www.data.go.kr) — 기상청_지상(종관, ASOS) 일자료 조회서비스 (실측)
+> **🖥️ 인터랙티브 대시보드(보너스):** **https://seoul-summer.streamlit.app**
 
 ## 1. 프로젝트 개요
 
@@ -138,4 +139,4 @@ export KMA_SERVICE_KEY="발급받은_인증키"
 | 과제 | 상태 | 내용 |
 | :--- | :---: | :--- |
 | 시계열 분해(STL) + 예측 모델 백테스트 | ✅ 완료 | `timeseries_advanced.py`(`./run.sh timeseries`) — 추세/계절성/잔차 분리, Holt 지수평활을 베이스라인과 5개년 백테스트로 정면 비교. 상세 내용은 `docs/ANALYSIS_EXPLANATION.md` 7장 참고 |
-| 대시보드 서비스화 | ✅ 완료 | `dashboard.py`(`./run.sh dashboard`, `http://localhost:8501`) — Streamlit 기반 인터랙티브 대시보드. KPI 카드, 연도 선택형 Plotly 타임라인, 정적 차트 갤러리, STL/백테스트 결과, 원본 데이터 탐색 |
+| 대시보드 서비스화 | ✅ 완료 | 배포 URL: **https://seoul-summer.streamlit.app** (Streamlit Community Cloud). 로컬 실행: `dashboard.py`(`./run.sh dashboard`, `http://localhost:8501`). KPI 카드, 연도 선택형 Plotly 타임라인, 정적 차트 갤러리, STL/백테스트 결과, 원본 데이터 탐색 |
