@@ -321,6 +321,8 @@ with tab_stl:
             fig_trend.add_vline(x=b, line_dash="dot", line_color="#d1d5db", line_width=1)
         fig_trend.update_layout(xaxis_title="연도 (5개년 여름을 이어붙인 축 — 점선=연도 경계)", yaxis_title="평균기온(℃)", height=380, hovermode="x unified", legend=dict(orientation="h", y=-0.25))
         fig_trend.update_xaxes(tickmode="array", tickvals=tick_vals, ticktext=tick_text)
+        y_pad = (df_stl["observed"].max() - df_stl["observed"].min()) * 0.05
+        fig_trend.update_yaxes(range=[df_stl["observed"].min() - y_pad, df_stl["observed"].max() + y_pad])
         st.plotly_chart(fig_trend, use_container_width=True)
         trend_start = df_stl[df_stl["year"] == first_year]["trend"].mean()
         trend_end = df_stl[df_stl["year"] == last_year]["trend"].mean()
@@ -328,7 +330,9 @@ with tab_stl:
             f"연한 회색 선이 실측 평균기온(날마다 들쭉날쭉), 굵은 빨간 선이 그 안에서 뽑아낸 장기 추세입니다. "
             f"{first_year}년 초입 평균 {trend_start:.2f}℃ → {last_year}년 말미 평균 {trend_end:.2f}℃로 "
             f"**{trend_end - trend_start:+.2f}℃** 이동했습니다 — 방향은 상승이지만, 표본이 {len(stl_years)}개년뿐이라 "
-            "이것만으로 장기 온난화라 단정하기는 이릅니다(`README.md` 9장 향후 발전 과제 참고)."
+            "이것만으로 장기 온난화라 단정하기는 이릅니다(`README.md` 9장 향후 발전 과제 참고). "
+            "**참고**: 범례를 눌러 실측(회색)을 꺼도 y축 범위는 고정되어 있습니다 — 추세의 실제 변화폭(약 1~2℃)은 "
+            "실측의 하루 변동폭(약 15℃)보다 훨씬 작기 때문에, 축이 다시 확대되면 작은 변화가 커 보이는 착시가 생길 수 있어서입니다."
         )
 
         st.markdown("#### ② 계절성 (Seasonal) — 매년 반복되는 '여름 내부' 패턴")
