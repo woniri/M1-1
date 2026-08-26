@@ -33,27 +33,15 @@ def load_data():
     return df_summer, df_sep_fc, df_sep_hist, df_backtest, df_compare, df_stl
 
 
-def insert_year_gaps(df):
-    """연도 사이 빈 구간(9월 말~다음 6월 초, 8개월치 결측)에 빈 행을 끼워 넣어
-    선 그래프가 그 구간을 직선으로 이어버리지 않고 연도별로 끊어지게 한다."""
-    df = df.sort_values("date").reset_index(drop=True)
-    years = sorted(df["year"].unique())
-    year_ends = df.groupby("year")["date"].max()
-    gap_rows = []
-    for y in years[:-1]:
-        gap_row = {c: np.nan for c in df.columns}
-        gap_row["date"] = year_ends[y] + pd.Timedelta(days=1)
-        gap_row["year"] = y
-        gap_rows.append(gap_row)
-    if gap_rows:
-        df = pd.concat([df, pd.DataFrame(gap_rows)], ignore_index=True).sort_values("date").reset_index(drop=True)
-    return df
-
-
-def year_ticks(df):
-    """각 연도의 중간 날짜(대략 여름 중반)에 'YYYY년' 눈금 하나씩만 표시하기 위한 tickvals/ticktext."""
-    mid_dates = df.groupby("year")["date"].apply(lambda s: s.sort_values().iloc[len(s) // 2])
-    return list(mid_dates.values), [f"{y}년" for y in mid_dates.index]
+def cycle_index_ticks(df):
+    """5개년 여름을 이어붙인 연속 축(cycle_index)에서, 연도당 'YYYY년' 눈금 하나(그 해 구간의 중앙)와
+    연도 경계에 그릴 세로선 위치를 계산한다. 실제 조사 대상이 여름뿐이므로 겨울 공백 없이 이어붙이되,
+    어디가 어느 해인지는 눈금·경계선으로 표시한다."""
+    mid = df.groupby("year")["cycle_index"].apply(lambda s: s.median())
+    tick_vals, tick_text = list(mid.values), [f"{y}년" for y in mid.index]
+    year_max = df.groupby("year")["cycle_index"].max().sort_index()
+    boundaries = [v + 0.5 for v in year_max.values[:-1]]
+    return tick_vals, tick_text, boundaries
 
 
 @st.cache_data
@@ -324,12 +312,14 @@ with tab_stl:
         season_len = int(df_stl[df_stl["year"] == first_year]["season_day"].max())
 
         st.markdown("#### ① 추세 (Trend) — 5개년 사이 여름철 기저 기온의 방향")
-        df_stl_gapped = insert_year_gaps(df_stl)
-        tick_vals, tick_text = year_ticks(df_stl)
+        tick_vals, tick_text, year_boundaries = cycle_index_ticks(df_stl)
+        date_str = df_stl["date"].dt.strftime("%Y-%m-%d")
         fig_trend = go.Figure()
-        fig_trend.add_trace(go.Scatter(x=df_stl_gapped["date"], y=df_stl_gapped["observed"], name="실측 평균기온", line=dict(color="#cbd5e1", width=1), opacity=0.7, connectgaps=False))
-        fig_trend.add_trace(go.Scatter(x=df_stl_gapped["date"], y=df_stl_gapped["trend"], name="STL 추세", line=dict(color="#dc2626", width=2.5), connectgaps=False))
-        fig_trend.update_layout(xaxis_title="연도 (여름 6~9월만 표시, 그 외 달은 데이터 없음)", yaxis_title="평균기온(℃)", height=380, hovermode="x unified", legend=dict(orientation="h", y=-0.25))
+        fig_trend.add_trace(go.Scatter(x=df_stl["cycle_index"], y=df_stl["observed"], name="실측 평균기온", line=dict(color="#cbd5e1", width=1), opacity=0.7, customdata=date_str, hovertemplate="%{customdata}<br>실측 %{y:.1f}℃<extra></extra>"))
+        fig_trend.add_trace(go.Scatter(x=df_stl["cycle_index"], y=df_stl["trend"], name="STL 추세", line=dict(color="#dc2626", width=2.5), customdata=date_str, hovertemplate="%{customdata}<br>추세 %{y:.1f}℃<extra></extra>"))
+        for b in year_boundaries:
+            fig_trend.add_vline(x=b, line_dash="dot", line_color="#d1d5db", line_width=1)
+        fig_trend.update_layout(xaxis_title="연도 (5개년 여름을 이어붙인 축 — 점선=연도 경계)", yaxis_title="평균기온(℃)", height=380, hovermode="x unified", legend=dict(orientation="h", y=-0.25))
         fig_trend.update_xaxes(tickmode="array", tickvals=tick_vals, ticktext=tick_text)
         st.plotly_chart(fig_trend, use_container_width=True)
         trend_start = df_stl[df_stl["year"] == first_year]["trend"].mean()
@@ -364,9 +354,11 @@ with tab_stl:
         resid_std = df_stl["resid"].std()
         colors = np.where(df_stl["resid"] >= 0, "#ef4444", "#3b82f6")
         fig_resid = go.Figure()
-        fig_resid.add_trace(go.Bar(x=df_stl["date"], y=df_stl["resid"], marker_color=colors, name="잔차"))
+        fig_resid.add_trace(go.Bar(x=df_stl["cycle_index"], y=df_stl["resid"], marker_color=colors, name="잔차", customdata=date_str, hovertemplate="%{customdata}<br>잔차 %{y:+.2f}℃<extra></extra>"))
         fig_resid.add_hline(y=0, line_color="#6b7280", line_width=1)
-        fig_resid.update_layout(xaxis_title="연도 (여름 6~9월만 표시, 그 외 달은 데이터 없음)", yaxis_title="잔차(℃)", height=380, showlegend=False)
+        for b in year_boundaries:
+            fig_resid.add_vline(x=b, line_dash="dot", line_color="#d1d5db", line_width=1)
+        fig_resid.update_layout(xaxis_title="연도 (5개년 여름을 이어붙인 축 — 점선=연도 경계)", yaxis_title="잔차(℃)", height=380, showlegend=False)
         fig_resid.update_xaxes(tickmode="array", tickvals=tick_vals, ticktext=tick_text)
         st.plotly_chart(fig_resid, use_container_width=True)
         top_hot = df_stl.nlargest(3, "resid")[["date", "observed", "resid"]]
